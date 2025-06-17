@@ -36,8 +36,8 @@ void configureBoard(){
     TRISBbits.TRISB8 = 0;
     LATBbits.LATB8 = 0;
     
-    TRISBbits.TRISB4 = 0;
-    LATBbits.LATB4 = 0;
+    TRISFbits.TRISF1 = 0;
+    LATFbits.LATF1 = 0;
     // Toggle State Button 
     TRISEbits.TRISE8 = 1;
 }
@@ -117,7 +117,7 @@ void toggleLEDs()
     {
         // blink left and right-side lights
         LATBbits.LATB4 = !LATBbits.LATB4;
-        LATBbits.LATB8 = !LATBbits.LATB8;
+        LATFbits.LATF1 = !LATFbits.LATF1;
     }
 }
 
