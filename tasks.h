@@ -32,11 +32,7 @@
 #define	TASKS_H
 
 #include <xc.h> // include processor files - each processor file is guarded.  
-#include "spi.h"
-#include "ADC.h"
-#include "UART.h"
-#include "timer.h"
-#include "pwm.h"
+
 
 
 #define ACCEL_BUF_SIZE 5
@@ -57,7 +53,7 @@ extern volatile STATE carState;
 void configureBoard();
 
 void calculate_average();
-void toggleState()
+void toggleState();
 void handleEmergencyState();
 void readADCData();
 

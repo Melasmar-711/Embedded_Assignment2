@@ -6,7 +6,11 @@
  */
 
 #include "tasks.h"
-
+#include "spi.h"
+#include "ADC.h"
+#include "UART.h"
+#include "timer.h"
+#include "pwm.h"
 
 volatile int16_t accel_buffer[ACCEL_BUF_SIZE][3];  // A buffer to hold X, Y, Z accel field samples
 volatile uint8_t accel_buf_head = 0; 

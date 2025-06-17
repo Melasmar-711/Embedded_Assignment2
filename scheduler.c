@@ -5,16 +5,8 @@
  * Created on June 17, 2025, 3:18 PM
  */
 
-#define "scheduler.h"
+#include "scheduler.h"
 
-
-typedef struct {
-  int n;
-  int N;
-  int enable;
-  void (*f)(void *);
-  void* params;
-} heartbeat;
 
 
 void scheduler(heartbeat schedInfo[], int nTasks) {
