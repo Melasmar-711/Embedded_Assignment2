@@ -6,6 +6,13 @@
  */
 
 #include "tasks.h"
+#include "spi.h"
+#include "ADC.h"
+#include "UART.h"
+#include "parser.h"
+#include "timer.h"
+#include "pwm.h"
+#include <string.h>
 
 
 volatile int16_t accel_buffer[ACCEL_BUF_SIZE][3];  // A buffer to hold X, Y, Z accel field samples
@@ -36,8 +43,8 @@ void configureBoard(){
     TRISBbits.TRISB8 = 0;
     LATBbits.LATB8 = 0;
     
-    TRISBbits.TRISB4 = 0;
-    LATBbits.LATB4 = 0;
+    TRISFbits.TRISF1 = 0;
+    LATFbits.LATF1 = 0;
     // Toggle State Button 
     TRISEbits.TRISE8 = 1;
     
@@ -129,6 +136,7 @@ void toggleLEDs()
         // blink left and right-side lights
         LATFbits.LATF1 = !LATFbits.LATF1;
         LATBbits.LATB8 = !LATBbits.LATB8;
+
     }
 }
 
@@ -157,6 +165,7 @@ void setDutyCycles(){
 }
 
 
+<<<<<<< HEAD
 
 void __attribute__((interrupt, auto_psv)) _INT1Interrupt(void){
     
@@ -167,3 +176,82 @@ void __attribute__((interrupt, auto_psv)) _INT1Interrupt(void){
     
     IEC1bits.INT1IE = 1;
 }
+=======
+void handleStateSwitch(STATE state)
+{
+    if(carState == EMERGENCY)
+    {
+        sendMessage(CHANGE_STATE_ACK0);
+    }else
+    {
+        carState = state;
+        sendMessage(CHANGE_STATE_ACK1);
+    }
+        
+}
+
+void handleUserMsg(char*msgPayload,char* msgType)
+{
+    if(memcmp(msgType,"PCREF",5)==0)
+    {
+        sendMessage("PCREF");
+        // speed and yaw rate message
+        int speed = extract_integer(msgPayload);
+        int idx = next_value(msgPayload,0);
+        int yaw_rate = extract_integer(msgPayload+idx);
+
+        char speedStr[12];  // enough for a 32-bit int, including sign and null terminator
+        sprintf(speedStr, "%d", speed);
+        sendMessage(speedStr);
+
+        char yawStr[12];  // enough for a 32-bit int, including sign and null terminator
+        sprintf(yawStr, "%d", yaw_rate);
+        sendMessage(yawStr);
+
+
+        move_motors(speed,yaw_rate);
+
+    }else if(memcmp(msgType,"PCSTP",5)==0)
+    {
+        // Switch to wait
+        sendMessage("PCSTP");
+        handleStateSwitch(WAIT);
+    }else if(memcmp(msgType,"PCSTT",5)==0)
+    {
+        // Switch to moving
+        handleStateSwitch(MOVING);
+        sendMessage("PCSTT");
+    }else
+    {
+        sendMessage(msgType);
+        U1TXREG = 'F';
+    }
+    
+}
+
+void handleUserMsgs()
+{
+    
+    int msg_received = 1;
+    while(msg_received==1){
+        char msgType[6];
+        char msgPayload[100];
+        // process all user messages
+        msg_received = getNextMsg(msgPayload,msgType);
+        U1TXREG = 'D';
+        if(msg_received==1){
+            U1TXREG = 'E';
+//            sendMessage(msgType);
+//            sendMessage(msgPayload);
+            handleUserMsg(msgPayload,msgType);
+            
+            
+        }
+    }
+}
+
+
+
+
+
+>>>>>>> fd0f4f003ae40ce8f2195981b560df8f07ae1509

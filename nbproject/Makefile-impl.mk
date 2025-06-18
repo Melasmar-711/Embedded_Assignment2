@@ -24,7 +24,7 @@ CLEAN_SUBPROJECTS=${CLEAN_SUBPROJECTS_${SUBPROJECTS}}
 
 
 # Project Name
-PROJECTNAME=G14_Assignment2.X
+PROJECTNAME=Embedded_Assignment2
 
 # Active Configuration
 DEFAULTCONF=default

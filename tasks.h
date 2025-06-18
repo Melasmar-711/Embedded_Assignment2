@@ -32,15 +32,13 @@
 #define	TASKS_H
 
 #include <xc.h> // include processor files - each processor file is guarded.  
-#include "spi.h"
-#include "ADC.h"
-#include "UART.h"
-#include "timer.h"
-#include "pwm.h"
+
 
 
 #define ACCEL_BUF_SIZE 5
 #define DIST_THRESHOLD 0.5
+#define CHANGE_STATE_ACK1 "$MACK,1*"
+#define CHANGE_STATE_ACK0 "$MACK,0*"
 
 
 
@@ -66,5 +64,8 @@ void readAccelerometer();
 void toggleLEDs();
 void setDutyCycles();
 
+void handleStateSwitch(STATE state);
+void handleUserMsg(char*msgPayload,char* msgType);
+void handleUserMsgs();
 #endif	/* TASKS_H */
 

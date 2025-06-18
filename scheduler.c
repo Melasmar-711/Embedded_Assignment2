@@ -7,10 +7,6 @@
 
 #include "scheduler.h"
 
-
-
-
-
 void scheduler(heartbeat schedInfo[], int nTasks) {
   int i;
   for (i = 0; i < nTasks; i++) {
