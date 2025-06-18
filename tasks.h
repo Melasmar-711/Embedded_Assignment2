@@ -57,13 +57,14 @@ extern volatile STATE carState;
 void configureBoard();
 
 void calculate_average();
-void toggleState()
+void toggleState();
 void handleEmergencyState();
 void readADCData();
 
 void readAccelerometer();
 
 void toggleLEDs();
+void setDutyCycles();
 
 #endif	/* TASKS_H */
 

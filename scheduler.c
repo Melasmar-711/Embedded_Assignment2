@@ -5,23 +5,17 @@
  * Created on June 17, 2025, 3:18 PM
  */
 
-#define "scheduler.h"
+#include "scheduler.h"
 
 
-typedef struct {
-  int n;
-  int N;
-  int enable;
-  void (*f)(void *);
-  void* params;
-} heartbeat;
+
 
 
 void scheduler(heartbeat schedInfo[], int nTasks) {
   int i;
   for (i = 0; i < nTasks; i++) {
     schedInfo[i].n++;
-    if (schedInfo[i].enable == 1 &&     schedInfo[i].n >= schedInfo[i].N) {
+    if (schedInfo[i].enable == 1 &&schedInfo[i].n >= schedInfo[i].N) {
       schedInfo[i].f(schedInfo[i].params); 
       schedInfo[i].n = 0;
     }

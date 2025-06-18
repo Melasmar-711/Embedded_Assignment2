@@ -40,7 +40,18 @@ void configureBoard(){
     LATBbits.LATB4 = 0;
     // Toggle State Button 
     TRISEbits.TRISE8 = 1;
+    
+    
+    TRISEbits.TRISE8 = 1;
+    RPINR0bits.INT1R=0b1011000;
+    INTCON2bits.INT1EP=1;
+    IFS1bits.INT1IF = 0;
+    IEC1bits.INT1IE = 1;
+    
+    
 }
+
+
 
 void calculate_average(){
     // Temporary variables to store the sum of X, Y, Z values
@@ -116,7 +127,7 @@ void toggleLEDs()
     if(carState == EMERGENCY)
     {
         // blink left and right-side lights
-        LATBbits.LATB4 = !LATBbits.LATB4;
+        LATFbits.LATF1 = !LATFbits.LATF1;
         LATBbits.LATB8 = !LATBbits.LATB8;
     }
 }
@@ -143,4 +154,16 @@ void setDutyCycles(){
         OC4R = 0;                                                       // setting the duty cycle to 0 for forward motion in case it had been set before
         OC3R = PTPER_VALUE*(-1*right_speed/MAX_LINEAR_VELOCITY); // calculating duty cycle based on the speed percentage
     }
+}
+
+
+
+void __attribute__((interrupt, auto_psv)) _INT1Interrupt(void){
+    
+    IEC1bits.INT1IE = 0;
+    IFS1bits.INT1IF = 0;
+    //toggleState();
+    LATBbits.LATB8^=1;
+    
+    IEC1bits.INT1IE = 1;
 }

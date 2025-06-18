@@ -31,7 +31,6 @@
 #ifndef SHEDULER_H
 #define	SHEDULER_H
 
-#include "tasks.h"
 
 
 #define n_tasks 5
