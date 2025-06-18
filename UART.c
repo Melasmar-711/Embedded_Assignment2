@@ -120,10 +120,11 @@ void setup_uart1(){
     char temp = tx_msg_buffer[tx_consume_idx];
     tx_consume_idx++;
     tx_consume_idx%=UART_BUF_SIZE;
-    IEC0bits.U1TXIE = 1;
+    
     if(temp=='\0')
         return;
     U1TXREG = temp;
+    IEC0bits.U1TXIE = 1;
     
  }
  void triggerSend()

@@ -9,8 +9,8 @@
 #define PTPER_VALUE ((FCY / PWM_FREQ) - 1)
 
 // Robot kinematic parameters
-#define MAX_LINEAR_VELOCITY 0.5    // m/s
-#define MAX_ANGULAR_VELOCITY 10    // rad/s
+#define MAX_LINEAR_VELOCITY 4    // m/s
+#define MAX_ANGULAR_VELOCITY 160    // rad/s
 #define TRACK_WIDTH 0.108          // meters
 
 // PWM control functions

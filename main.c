@@ -57,11 +57,18 @@ int main(void) {
     
     //  task
     schedInfo[5].n = 0;
-    schedInfo[5].N = 50;
-    schedInfo[5].f = logData;
+    schedInfo[5].N = 500;
+    schedInfo[5].f = logBattery;
     schedInfo[5].params = NULL;
     schedInfo[5].enable = 1; 
     
+    schedInfo[6].n = 0;
+    schedInfo[6].N = 50;
+    schedInfo[6].f = logIrAndAccel;
+    schedInfo[6].params = NULL;
+    schedInfo[6].enable = 1; 
+    
+
     TRISGbits.TRISG9 = 0;
     LATGbits.LATG9 = 0;
     while(1){

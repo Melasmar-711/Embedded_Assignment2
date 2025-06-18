@@ -67,7 +67,9 @@ void setDutyCycles();
 void handleStateSwitch(STATE state);
 void handleUserMsg(char*msgPayload,char* msgType);
 void handleUserMsgs();
-void logData();
+void logBattery();
+void logIrAndAccel();
+
 
 #endif	/* TASKS_H */
 

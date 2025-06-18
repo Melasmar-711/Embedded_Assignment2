@@ -253,17 +253,22 @@ void handleUserMsgs()
     }
 }
 
-void logData()
+void logBattery()
 {
     char msg[16];
     sprintf(msg, "$MBATT,%.2f*", vbattery);
-    sendMessage(msg);
-    sprintf(msg, "$MDIST,%d*", IR_reading);
-    sendMessage(msg);
-    sprintf(msg, "$MACC,%d,%d,%d*", avg_x, avg_y, avg_z);
     sendMessage(msg);
     triggerSend();
 }
 
 
 
+void logIrAndAccel()
+{
+    char msg[16];
+    sprintf(msg, "$MDIST,%.2f*", IR_reading);
+    sendMessage(msg);
+    sprintf(msg, "$MACC,%d,%d,%d*", avg_x, avg_y, avg_z);
+    sendMessage(msg);
+    triggerSend();
+}
