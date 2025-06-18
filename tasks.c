@@ -165,7 +165,6 @@ void setDutyCycles(){
 }
 
 
-<<<<<<< HEAD
 
 void __attribute__((interrupt, auto_psv)) _INT1Interrupt(void){
     
@@ -176,7 +175,6 @@ void __attribute__((interrupt, auto_psv)) _INT1Interrupt(void){
     
     IEC1bits.INT1IE = 1;
 }
-=======
 void handleStateSwitch(STATE state)
 {
     if(carState == EMERGENCY)
@@ -254,4 +252,3 @@ void handleUserMsgs()
 
 
 
->>>>>>> fd0f4f003ae40ce8f2195981b560df8f07ae1509
