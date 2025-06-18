@@ -58,7 +58,7 @@ void setup_uart1(){
     }
  }      
  
- int getNextMsg(char**msgPayload,char**msgType)
+ int getNextMsg(char*msgPayload,char*msgType)
  {
      // check if the buffer is empty
 //     IEC0bits.U1RXIE = 0;
@@ -81,8 +81,16 @@ void setup_uart1(){
          if(is_new_msg==1)
          {
              // return the  message
-             *msgPayload = pstate.msg_payload;
-             *msgType = pstate.msg_type;
+             for(int i=0;i<100;i++){
+                *(msgPayload+i) = pstate.msg_payload[i];
+                if(pstate.msg_payload[i]=='\0')
+                    break;
+             }
+             
+             for(int i=0;i<6;i++){
+                *(msgType+i) = pstate.msg_type[i];
+             }
+             *(msgType+5) = '\0';
 //             while (U1STAbits.UTXBF);  // Wait if UART TX is busy
 //             U1TXREG = 'B';
              return 1;
@@ -96,6 +104,7 @@ void setup_uart1(){
          }
 //         IEC0bits.U1RXIE = 1;
      }
+     return 0;
  }
  
  void sendChar()

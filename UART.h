@@ -35,7 +35,7 @@
 
 void setup_uart1();
 void sendMessage(char* msg);
-int getNextMsg(char**msgPayload,char**msgType);
+int getNextMsg(char*msgPayload,char*msgType);
 void sendChar();
 void triggerSend();
 #endif	/* UART_H */

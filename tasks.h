@@ -37,6 +37,8 @@
 
 #define ACCEL_BUF_SIZE 5
 #define DIST_THRESHOLD 0.5
+#define CHANGE_STATE_ACK1 "$MACK,1*"
+#define CHANGE_STATE_ACK0 "$MACK,0*"
 
 
 
@@ -60,6 +62,8 @@ void readADCData();
 void readAccelerometer();
 
 void toggleLEDs();
-
+void handleStateSwitch(STATE state);
+void handleUserMsg(char*msgPayload,char* msgType);
+void handleUserMsgs();
 #endif	/* TASKS_H */
 
