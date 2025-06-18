@@ -33,7 +33,7 @@
 
 
 
-#define n_tasks 5
+#define n_tasks 6
 #define MAX_TASKS 15
 
 typedef struct {

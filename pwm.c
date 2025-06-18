@@ -75,7 +75,14 @@ void Start_PWM(void) {
     OC3CON1bits.OCM = 0b110; // Enable OC1 in edge-aligned PWM mode
     OC1CON1bits.OCM = 0b110; // Enable OC1 in edge-aligned PWM mode
 }
-
+void Pause_PWM(void)
+{
+    // Reset duty cycles to 0% (motor stopped)
+    OC4R = 0;               // Set OC1 duty cycle to 0% (motor stopped)
+    OC2R = 0;               // Set OC2 duty cycle to 0% (motor stopped)
+    OC3R = 0;               // Set OC3 duty cycle to 0% (motor stopped)
+    OC1R = 0;               // Set OC1 duty cycle to 0% (motor stopped)
+}
 // Disable PWM output and reset duty cycles to zero
 void Stop_PWM(void) {
     OC4CON1bits.OCM = 0b000; // Disable OC1 output (no compare mode)

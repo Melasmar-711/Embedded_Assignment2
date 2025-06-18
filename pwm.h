@@ -16,6 +16,7 @@
 // PWM control functions
 void OCx_PWM_Init(void);
 void Start_PWM(void);
+void Pause_PWM(void);
 void Stop_PWM(void);
 void move_motors(int speed_percentage, int yaw_rate_percentage);
 

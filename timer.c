@@ -72,7 +72,7 @@ void __attribute__((interrupt, auto_psv)) _T2Interrupt(void) {
     if(!toggleStateButtonCanBePressed)
     {
         toggleStateButtonCounter++;
-        if(toggleStateButtonCounter >= 500)
+        if(toggleStateButtonCounter >= 5000)
         {
             toggleStateButtonCanBePressed= 1;
             toggleStateButtonCounter = 0;

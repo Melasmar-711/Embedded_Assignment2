@@ -142,6 +142,10 @@ void toggleLEDs()
 
 void setDutyCycles(){
         // Left motor PWM assignment
+    if((carState == WAIT) || (carState == EMERGENCY)){
+        Pause_PWM();
+        return;
+    }
     if(left_speed >0){    
         OC1R = 0;                                                    // setting the duty cycle to 0 for backward motion in case it had been set before
         OC2R = PTPER_VALUE*(left_speed/MAX_LINEAR_VELOCITY);    // calculating duty cycle based on the speed percentage
@@ -170,13 +174,15 @@ void __attribute__((interrupt, auto_psv)) _INT1Interrupt(void){
     
     IEC1bits.INT1IE = 0;
     IFS1bits.INT1IF = 0;
-    //toggleState();
-    LATBbits.LATB8^=1;
-    
+    toggleState();    
     IEC1bits.INT1IE = 1;
 }
 void handleStateSwitch(STATE state)
 {
+//    if(carState == WAIT)
+//        U1TXREG = 'G';
+//    else if(carState == MOVING)
+//        U1TXREG = 'H';
     if(carState == EMERGENCY)
     {
         sendMessage(CHANGE_STATE_ACK0);
@@ -222,7 +228,7 @@ void handleUserMsg(char*msgPayload,char* msgType)
     }else
     {
         sendMessage(msgType);
-        U1TXREG = 'F';
+//        U1TXREG = 'F';
     }
     
 }
@@ -236,9 +242,8 @@ void handleUserMsgs()
         char msgPayload[100];
         // process all user messages
         msg_received = getNextMsg(msgPayload,msgType);
-        U1TXREG = 'D';
         if(msg_received==1){
-            U1TXREG = 'E';
+//            U1TXREG = 'E';
 //            sendMessage(msgType);
 //            sendMessage(msgPayload);
             handleUserMsg(msgPayload,msgType);
@@ -248,7 +253,17 @@ void handleUserMsgs()
     }
 }
 
-
+void logData()
+{
+    char msg[16];
+    sprintf(msg, "$MBATT,%.2f*", vbattery);
+    sendMessage(msg);
+    sprintf(msg, "$MDIST,%d*", IR_reading);
+    sendMessage(msg);
+    sprintf(msg, "$MACC,%d,%d,%d*", avg_x, avg_y, avg_z);
+    sendMessage(msg);
+    triggerSend();
+}
 
 
 
