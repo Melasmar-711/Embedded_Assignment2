@@ -34,6 +34,9 @@
 #include <xc.h> // include processor files - each processor file is guarded.  
 
 void setup_uart1();
-void send_string_uart1(char* msg);
+void sendMessage(char* msg);
+int getNextMsg(char**msgPayload,char**msgType);
+void sendChar();
+void triggerSend();
 #endif	/* UART_H */
 

@@ -39,45 +39,62 @@ void setup_uart1(){
     IEC0bits.U1RXIE = 1;   // Enable RX interrupt
     IPC2bits.U1RXIP = 1;  // Set RX interrupt priority to 1
     
+    pstate.state = STATE_DOLLAR;
+	pstate.index_type = 0; 
+	pstate.index_payload = 0;
 
 }
 
  void sendMessage(char* msg)
  {
-    IEC0bits.U1TXIE = 0;
     for (int i=0;i<256;i++){
+        IEC0bits.U1TXIE = 0;
         tx_msg_buffer[tx_insert_idx] = msg[i];
         tx_insert_idx++;
         tx_insert_idx %= UART_BUF_SIZE;
+        IEC0bits.U1TXIE = 1;
         if (msg[i] == '\0')
             break;  // Stop copying once the null terminator is encountered
     }
-    IEC0bits.U1TXIE = 1;
  }      
  
- int getNextMsg(char*msgPayload,char*msgType)
+ int getNextMsg(char**msgPayload,char**msgType)
  {
      // check if the buffer is empty
-     if(rx_insert_idx == rx_consume_idx)
+//     IEC0bits.U1RXIE = 0;
+     if(rx_insert_idx == rx_consume_idx){
+//         while (U1STAbits.UTXBF);  // Wait if UART TX is busy
+//         U1TXREG = 'A';
          return 0;
+     }
+//     IEC0bits.U1RXIE = 1;
      // loop over the bytes and parse
      for (int i=0;i<UART_BUF_SIZE;i++)
      {
          // parse the byte
          int is_new_msg = parse_byte(&pstate,rx_msg_buffer[rx_consume_idx]);
+//         while (U1STAbits.UTXBF);  // Wait if UART TX is busy
+//         U1TXREG = rx_msg_buffer[rx_consume_idx];
          // advance the index
          rx_consume_idx++;
          rx_consume_idx %= UART_BUF_SIZE;
          if(is_new_msg==1)
          {
              // return the  message
-             msgPayload = pstate.msg_payload;
-             msgType = pstate.msg_type;
+             *msgPayload = pstate.msg_payload;
+             *msgType = pstate.msg_type;
+//             while (U1STAbits.UTXBF);  // Wait if UART TX is busy
+//             U1TXREG = 'B';
              return 1;
          }
-         // if the buffer is empty return  
-         if(rx_insert_idx == rx_consume_idx)
+         // if the buffer is empty return
+//         IEC0bits.U1RXIE = 0;
+         if(rx_insert_idx == rx_consume_idx){
+//             while (U1STAbits.UTXBF);  // Wait if UART TX is busy
+//             U1TXREG = 'C';
             return 0; 
+         }
+//         IEC0bits.U1RXIE = 1;
      }
  }
  
@@ -86,15 +103,19 @@ void setup_uart1(){
      // if the buffer is empty return  
     if(tx_insert_idx == tx_consume_idx)
     {
-        IFS0bits.U1TXIF = 0;
+        IEC0bits.U1TXIE = 0;
         return; 
     }
-        
-    IFS0bits.U1TXIF = 0;  // Clear the TX interrupt flag
-    U1TXREG = tx_msg_buffer[tx_consume_idx];
+    
+    IEC0bits.U1TXIE = 0;
+    char temp = tx_msg_buffer[tx_consume_idx];
     tx_consume_idx++;
     tx_consume_idx%=UART_BUF_SIZE;
-    IFS0bits.U1TXIF = 1;
+    IEC0bits.U1TXIE = 1;
+    if(temp=='\0')
+        return;
+    U1TXREG = temp;
+    
  }
  void triggerSend()
  {
@@ -104,13 +125,18 @@ void setup_uart1(){
  
  void __attribute__((__interrupt__, __auto_psv__)) _U1RXInterrupt(){ 
 	IFS0bits.U1RXIF = 0;  // Clear the RX interrupt flag
+    if (U1STAbits.OERR) {
+        U1STAbits.OERR = 0; // Clear overrun error
+    }
     char received = U1RXREG;  // Read the received character
+//    U1TXREG = received;
     rx_msg_buffer[rx_insert_idx] = received;
     rx_insert_idx++;
     rx_insert_idx%=UART_BUF_SIZE;
-    IFS0bits.U1RXIF = 1;
  }
  
  void __attribute__((__interrupt__, __auto_psv__)) _U1TXInterrupt(){ 
+     
+     IFS0bits.U1TXIF = 0;  // Clear the TX interrupt flag
      sendChar();
  }
