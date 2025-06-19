@@ -15,11 +15,11 @@
 #include <string.h>
 
 
-volatile int16_t accel_buffer[ACCEL_BUF_SIZE][3];  // A buffer to hold X, Y, Z accel field samples
-volatile uint8_t accel_buf_head = 0; 
-volatile float avg_x, avg_y, avg_z;   // Variables to hold the average X, Y, Z values of accel data
-volatile float IR_reading;
-volatile double vbattery;
+int16_t accel_buffer[ACCEL_BUF_SIZE][3];  // A buffer to hold X, Y, Z accel field samples
+uint8_t accel_buf_head = 0; 
+float avg_x, avg_y, avg_z;   // Variables to hold the average X, Y, Z values of accel data
+float IR_reading;
+double vbattery;
 int emergencyEndCounter = 0;
 volatile STATE carState = WAIT;  // Define and optionally initialize the variable
 
