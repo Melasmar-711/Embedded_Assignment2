@@ -210,30 +210,16 @@ void handleUserMsg(char*msgPayload,char* msgType)
         int idx = next_value(msgPayload,0);
         int yaw_rate = extract_integer(msgPayload+idx);
 
-        char speedStr[12];  // enough for a 32-bit int, including sign and null terminator
-        sprintf(speedStr, "%d", speed);
-        sendMessage(speedStr);
-
-        char yawStr[12];  // enough for a 32-bit int, including sign and null terminator
-        sprintf(yawStr, "%d", yaw_rate);
-        sendMessage(yawStr);
-
-
         move_motors(speed,yaw_rate);
 
     }else if(memcmp(msgType,"PCSTP",5)==0)
     {
         // Switch to wait
-        sendMessage("PCSTP");
         handleStateSwitch(WAIT);
     }else if(memcmp(msgType,"PCSTT",5)==0)
     {
         // Switch to moving
         handleStateSwitch(MOVING);
-        sendMessage("PCSTT");
-    }else
-    {
-        sendMessage(msgType);
     }
     
 }

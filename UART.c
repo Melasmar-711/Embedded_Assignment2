@@ -11,8 +11,8 @@
 #include "parser.h"
 // Define buffer size for UART messages
 
-#define TX_UART_BUF_SIZE 128
-#define RX_UART_BUF_SIZE 64
+#define TX_UART_BUF_SIZE 64
+#define RX_UART_BUF_SIZE 32
 
 parser_state pstate;
 
