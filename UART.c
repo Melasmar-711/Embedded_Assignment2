@@ -23,6 +23,8 @@ int tx_consume_idx = 0;
 int rx_insert_idx = 0;
 int rx_consume_idx = 0;
 
+
+
 void setup_uart1(){
     
     TRISDbits.TRISD11 = 1; // Set RD11 as input (RX pin)
@@ -49,37 +51,34 @@ void setup_uart1(){
 
  void sendMessage(char* msg)
  {
+     IEC0bits.U1TXIE = 0;
     for (int i=0;i<256;i++){
-        IEC0bits.U1TXIE = 0;
+        
         tx_msg_buffer[tx_insert_idx] = msg[i];
         tx_insert_idx++;
         tx_insert_idx %= TX_UART_BUF_SIZE;
-        IEC0bits.U1TXIE = 1;
         if (msg[i] == '\0')
             break;  // Stop copying once the null terminator is encountered
     }
+     IEC0bits.U1TXIE = 1;
  }      
  
  int getNextMsg(char*msgPayload,char*msgType)
  {
      // check if the buffer is empty
-//     IEC0bits.U1RXIE = 0;
      if(rx_insert_idx == rx_consume_idx){
-//         while (U1STAbits.UTXBF);  // Wait if UART TX is busy
-//         U1TXREG = 'A';
          return 0;
      }
-//     IEC0bits.U1RXIE = 1;
      // loop over the bytes and parse
      for (int i=0;i<RX_UART_BUF_SIZE;i++)
      {
+         IEC0bits.U1RXIE = 0;
          // parse the byte
          int is_new_msg = parse_byte(&pstate,rx_msg_buffer[rx_consume_idx]);
-//         while (U1STAbits.UTXBF);  // Wait if UART TX is busy
-//         U1TXREG = rx_msg_buffer[rx_consume_idx];
          // advance the index
          rx_consume_idx++;
          rx_consume_idx %= RX_UART_BUF_SIZE;
+         IEC0bits.U1RXIE = 1;
          if(is_new_msg==1)
          {
              // return the  message
@@ -93,18 +92,13 @@ void setup_uart1(){
                 *(msgType+i) = pstate.msg_type[i];
              }
              *(msgType+5) = '\0';
-//             while (U1STAbits.UTXBF);  // Wait if UART TX is busy
-//             U1TXREG = 'B';
+
              return 1;
          }
          // if the buffer is empty return
-//         IEC0bits.U1RXIE = 0;
          if(rx_insert_idx == rx_consume_idx){
-//             while (U1STAbits.UTXBF);  // Wait if UART TX is busy
-//             U1TXREG = 'C';
             return 0; 
          }
-//         IEC0bits.U1RXIE = 1;
      }
      return 0;
  }
@@ -119,13 +113,16 @@ void setup_uart1(){
     }
     
     IEC0bits.U1TXIE = 0;
-    char temp = tx_msg_buffer[tx_consume_idx];
-    tx_consume_idx++;
-    tx_consume_idx%=TX_UART_BUF_SIZE;
-    
-    if(temp=='\0')
-        return;
-    U1TXREG = temp;
+    char temp;
+    while(!U1STAbits.UTXBF && tx_insert_idx != tx_consume_idx){
+        temp = tx_msg_buffer[tx_consume_idx];
+        tx_consume_idx++;
+        tx_consume_idx%=TX_UART_BUF_SIZE;
+
+        if(temp=='\0')
+            break;
+        U1TXREG = temp;
+    }
     IEC0bits.U1TXIE = 1;
     
  }
@@ -140,11 +137,12 @@ void setup_uart1(){
     if (U1STAbits.OERR) {
         U1STAbits.OERR = 0; // Clear overrun error
     }
-    char received = U1RXREG;  // Read the received character
-//    U1TXREG = received;
-    rx_msg_buffer[rx_insert_idx] = received;
-    rx_insert_idx++;
-    rx_insert_idx%=RX_UART_BUF_SIZE;
+    while(U1STAbits.URXDA){
+        char received = U1RXREG;  // Read the received character
+        rx_msg_buffer[rx_insert_idx] = received;
+        rx_insert_idx++;
+        rx_insert_idx%=RX_UART_BUF_SIZE;
+    }
  }
  
  void __attribute__((__interrupt__, __auto_psv__)) _U1TXInterrupt(){ 

@@ -184,10 +184,6 @@ void __attribute__((interrupt, auto_psv)) _INT1Interrupt(void){
 }
 void handleStateSwitch(STATE state)
 {
-//    if(carState == WAIT)
-//        U1TXREG = 'G';
-//    else if(carState == MOVING)
-//        U1TXREG = 'H';
     if(carState == EMERGENCY)
     {
         sendMessage(CHANGE_STATE_ACK0);
