@@ -1,6 +1,6 @@
 /*
  * File:   main.c
- * Author: ahmed
+ * Author: Ahmed Salah, Mahmoud El Asmar, Mahmoud Magdy, Mohamed Ismail
  *
  * Created on June 16, 2025, 7:28 PM
  */
@@ -41,40 +41,42 @@ int main(void) {
     schedInfo[2].params = NULL;
     schedInfo[2].enable = 1; 
     
-    //  task
+    // reading accelerometer task
     schedInfo[3].n = 0;
     schedInfo[3].N = 50;
     schedInfo[3].f = readAccelerometer;
     schedInfo[3].params = NULL;
     schedInfo[3].enable = 1; 
     
-    //  task
+    // handling user msgs task
     schedInfo[4].n = 0;
     schedInfo[4].N = 50;
     schedInfo[4].f = handleUserMsgs;
     schedInfo[4].params = NULL;
     schedInfo[4].enable = 1; 
     
-    //  task
+    // logging battery task
     schedInfo[5].n = 0;
     schedInfo[5].N = 500;
     schedInfo[5].f = logBattery;
     schedInfo[5].params = NULL;
     schedInfo[5].enable = 1; 
     
+    // logging accelerometer data and ir
     schedInfo[6].n = 0;
     schedInfo[6].N = 50;
     schedInfo[6].f = logIrAndAccel;
     schedInfo[6].params = NULL;
     schedInfo[6].enable = 1; 
     
-
+    //for debugging
     TRISGbits.TRISG9 = 0;
     LATGbits.LATG9 = 0;
+    
     while(1){
         scheduler(schedInfo,n_tasks);
         int expired = tmr_wait_period(TIMER1);
-        if(expired == 1)
+        if(expired == 1) // for debugging purposes
             LATGbits.LATG9 = 1;
     }
     return 0;

@@ -1,3 +1,12 @@
+
+/*
+ * File:   pwm.c
+ * Author: Ahmed Salah, Mahmoud El Asmar, Mahmoud Magdy, Mohamed Ismail
+ *
+ * Created on June 16, 2025, 2:17 AM
+ */
+
+
 #include "pwm.h"
 
 
@@ -48,13 +57,13 @@ void move_motors(int speed_percentage, int yaw_rate_percentage) {
 
     /*
     v = (v_l+v_r)/2   (0)  ----> desired_speed is v
-     w = (v_r -v_l)/L      where L is track width  desired_angular_vel is w
+    w = (v_r -v_l)/L      where L is track width  desired_angular_vel is w
 
 
     2v = vr +vl  (1)    vl is left_side_speed and vr is rigth_side_speed
-     w*L =vr-vl   (2)    L is TRACK_WIDTH
-     adding (1)&(2)  gives us:
-     2v+(w*l) =2vr  ----      vr=(2v+(w*l))/2         (3)
+    w*L =vr-vl   (2)    L is TRACK_WIDTH
+    adding (1)&(2)  gives us:
+    2v+(w*l) =2vr  ----      vr=(2v+(w*l))/2         (3)
     */
 
     // Differential drive calculations

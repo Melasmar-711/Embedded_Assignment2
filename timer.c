@@ -19,6 +19,8 @@ volatile uint8_t base_ms2 = 0;
 volatile uint16_t toggleStateButtonCounter = 0;
 volatile int toggleStateButtonCanBePressed = 1;
 
+
+
 void tmr_setup_period(int timer, int ms) {
     if (ms <= 0 || ms > 200) {
         // Handle invalid input
@@ -72,7 +74,7 @@ void __attribute__((interrupt, auto_psv)) _T2Interrupt(void) {
     if(!toggleStateButtonCanBePressed)
     {
         toggleStateButtonCounter++;
-        if(toggleStateButtonCounter >= 5000)
+        if(toggleStateButtonCounter >= 500)
         {
             toggleStateButtonCanBePressed= 1;
             toggleStateButtonCounter = 0;

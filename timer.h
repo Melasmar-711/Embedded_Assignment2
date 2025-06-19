@@ -45,6 +45,7 @@
 // Helper macro to calculate the period register value
 #define CALCULATE_COUNT_VAL(ms) ((uint16_t)((ms) * MS_COUNT_NUM))
 
+extern volatile int toggleStateButtonCanBePressed;
 
 void tmr_setup_period(int timer, int ms);
 int tmr_wait_period(int timer);

@@ -1,6 +1,6 @@
 /*
  * File:   scheduler.c
- * Author: mahmo
+ * Author: Ahmed Salah, Mahmoud El Asmar, Mahmoud Magdy, Mohamed Ismail
  *
  * Created on June 17, 2025, 3:18 PM
  */

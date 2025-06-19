@@ -1,32 +1,28 @@
- //* Author: Mahmoud El Asmar, Ahmed Salah, Mahmoud Magdy, Mohamed Ismail
-
+/*
+ * File:   spi.c
+ * Author: Ahmed Salah, Mahmoud El Asmar, Mahmoud Magdy, Mohamed Ismail
+ *
+ * Created on June 17, 2025, 3:18 PM
+ */
 #include "spi.h"
 #include "timer.h"
 
 void setup_spi()
 {
     TRISAbits.TRISA1 = 1;           // MISO (RPI17)
-    TRISFbits.TRISF12 = 0;          // SCK  (RP108)
     TRISFbits.TRISF13 = 0;          // MOSI (RP109)
-    
-    // === Remap SPI1 Pins ===
-    RPINR20bits.SDI1R = 0b0010001;  // SDI1 (MISO) <- RPI17 (RA1)
-    RPOR12bits.RP109R = 0b000101;   // SDO1 (MOSI) -> RP109 (RF13)
-    RPOR11bits.RP108R = 0b000110;   // SCK1 -> RP108 (RF12)
+    TRISFbits.TRISF12 = 0;          // SCK  (RP108)
     
     // Set CS1 as output
-    TRISBbits.TRISB4 = 0;
     TRISBbits.TRISB3 = 0;
+    TRISBbits.TRISB4 = 0;
     TRISDbits.TRISD6 = 0;
-    
 
     // disable Chip Select
-    LATBbits.LATB3 = 1;             // CS1 HIGH (not used)
+    LATBbits.LATB3 = 1;             
     LATBbits.LATB4 = 1;
     LATDbits.LATD6 = 1;
     
-    
-
     // === Configure SPI1 ===
     SPI1STATbits.SPIEN = 0;         // Disable SPI before config
     SPI1CON1bits.MSTEN = 1;         // Master mode
@@ -36,7 +32,13 @@ void setup_spi()
     SPI1CON1bits.SPRE = 0b101;      // Secondary prescaler = 3:1
     SPI1CON1bits.PPRE = 0b10;       // Primary prescaler = 4:1
     SPI1STATbits.SPIEN = 1;         // Enable SPI
-
+    
+    // === Remap SPI1 Pins ===
+    RPINR20bits.SDI1R = 0x11;  // SDI1 (MISO) <- RPI17 (RA1)
+    RPOR12bits.RP109R = 0x05;   // SDO1 (MOSI) -> RP109 (RF13)
+    RPOR11bits.RP108R = 0x06;   // SCK1 -> RP108 (RF12)
+    
+    
     // Step 1: Sleep mode
     LATBbits.LATB3 = 0;
     tmr_wait_ms(TIMER2, 3);
@@ -45,7 +47,7 @@ void setup_spi()
     LATBbits.LATB3 = 1; // Set CS3 HIGH (deselect magnetometer)
     tmr_wait_ms(TIMER2, 3); // Wait for 3ms
 
-    // Step 3: Set Output Data Rate to 25Hz
+    // Step 3: Setting Output Data Rate to 25Hz
     LATBbits.LATB3 = 0;
     tmr_wait_ms(TIMER2, 3);
     spi_write(0x4C & 0x7F); // ODR register

@@ -1,6 +1,6 @@
 /*
  * File:   ADC.c
- * Author: ahmed
+ * Author: Ahmed Salah, Mahmoud El Asmar, Mahmoud Magdy, Mohamed Ismail
  *
  * Created on June 16, 2025, 2:17 AM
  */
@@ -55,14 +55,14 @@ void setScanPorts()
 }
 
 float readIRDist()
-{
+{   // reading IR distance
     float IR_reading = ADC1BUF1;
     IR_reading = (IR_reading*3.3/1023.0);
     IR_reading = 2.34 - 4.74*IR_reading + 4.06*pow(IR_reading,2) - 1.60*pow(IR_reading,3) + 0.24*pow(IR_reading,4);
     return IR_reading;
 }
 double readVBat()
-{
+{   // Battery sensing
     double vbattery = ADC1BUF0;
     vbattery = 3.0*(vbattery*3.3/1023.0);
     return vbattery;

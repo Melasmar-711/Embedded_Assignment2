@@ -1,6 +1,6 @@
 /*
  * File:   tasks.c
- * Author: ahmed
+ * Author: Mahmoud El Asmar, Ahmed Salah, Mahmoud Magdy, Mohamed Ismail
  *
  * Created on June 16, 2025, 7:29 PM
  */
@@ -49,11 +49,12 @@ void configureBoard(){
     TRISEbits.TRISE8 = 1;
     
     
-    TRISEbits.TRISE8 = 1;
-    RPINR0bits.INT1R=0b1011000;
-    INTCON2bits.INT1EP=1;
-    IFS1bits.INT1IF = 0;
-    IEC1bits.INT1IE = 1;
+    //configuring and enabling external interrupts
+    TRISEbits.TRISE8 = 1; //set E8 as input
+    RPINR0bits.INT1R= 0b1011000; // mapping INT1 to RP188
+    INTCON2bits.INT1EP=1; //set mode
+    IFS1bits.INT1IF = 0; //set interrupt flag to zero
+    IEC1bits.INT1IE = 1; //enabling INT1 interrupt
     
     
 }
@@ -179,7 +180,11 @@ void __attribute__((interrupt, auto_psv)) _INT1Interrupt(void){
     
     IEC1bits.INT1IE = 0;
     IFS1bits.INT1IF = 0;
-    toggleState();    
+    
+    if(toggleStateButtonCanBePressed){
+        toggleState(); 
+        toggleStateButtonCanBePressed=0;
+    }
     IEC1bits.INT1IE = 1;
 }
 void handleStateSwitch(STATE state)
@@ -229,7 +234,6 @@ void handleUserMsg(char*msgPayload,char* msgType)
     }else
     {
         sendMessage(msgType);
-//        U1TXREG = 'F';
     }
     
 }
@@ -243,9 +247,6 @@ void handleUserMsgs()
         // process all user messages
         msg_received = getNextMsg(msgPayload,msgType);
         if(msg_received==1){
-//            U1TXREG = 'E';
-//            sendMessage(msgType);
-//            sendMessage(msgPayload);
             handleUserMsg(msgPayload,msgType);
             
             
