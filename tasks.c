@@ -95,12 +95,17 @@ void handleEmergencyState()
         // Emergency situation detected
         emergencyEndCounter = 0;
         carState = EMERGENCY;
+        sendMessage("$MEMRG,1*");
     }else if(carState == EMERGENCY && IR_reading > DIST_THRESHOLD)
     {
         // Cool down after Emergency
         emergencyEndCounter++;
-        if(emergencyEndCounter > 2500) // task is at 500 HZ, multiplied by 5 seconds
+        if(emergencyEndCounter > 2500){ // task is every 500 HZ, multiplied by 5 seconds
             carState = WAIT;
+            LATFbits.LATF1 = 0;
+            LATBbits.LATB8 = 0;
+            sendMessage("$MEMRG,0*");
+        }
     }else if(carState == EMERGENCY && IR_reading <= DIST_THRESHOLD)
     {
         // Emergency state continuing

@@ -36,7 +36,7 @@ int main(void) {
     
     // Toggling Led task
     schedInfo[2].n = 0;
-    schedInfo[2].N = 500;
+    schedInfo[2].N = 250; // because blink requires two cycles so we have double frequency
     schedInfo[2].f = toggleLEDs;
     schedInfo[2].params = NULL;
     schedInfo[2].enable = 1; 

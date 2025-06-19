@@ -11,11 +11,13 @@
 #include "parser.h"
 // Define buffer size for UART messages
 
-#define UART_BUF_SIZE 64
+#define TX_UART_BUF_SIZE 128
+#define RX_UART_BUF_SIZE 64
+
 parser_state pstate;
 
-char tx_msg_buffer[UART_BUF_SIZE];
-char rx_msg_buffer[UART_BUF_SIZE];
+char tx_msg_buffer[TX_UART_BUF_SIZE];
+char rx_msg_buffer[RX_UART_BUF_SIZE];
 int tx_insert_idx = 0;
 int tx_consume_idx = 0;
 int rx_insert_idx = 0;
@@ -51,7 +53,7 @@ void setup_uart1(){
         IEC0bits.U1TXIE = 0;
         tx_msg_buffer[tx_insert_idx] = msg[i];
         tx_insert_idx++;
-        tx_insert_idx %= UART_BUF_SIZE;
+        tx_insert_idx %= TX_UART_BUF_SIZE;
         IEC0bits.U1TXIE = 1;
         if (msg[i] == '\0')
             break;  // Stop copying once the null terminator is encountered
@@ -69,7 +71,7 @@ void setup_uart1(){
      }
 //     IEC0bits.U1RXIE = 1;
      // loop over the bytes and parse
-     for (int i=0;i<UART_BUF_SIZE;i++)
+     for (int i=0;i<RX_UART_BUF_SIZE;i++)
      {
          // parse the byte
          int is_new_msg = parse_byte(&pstate,rx_msg_buffer[rx_consume_idx]);
@@ -77,7 +79,7 @@ void setup_uart1(){
 //         U1TXREG = rx_msg_buffer[rx_consume_idx];
          // advance the index
          rx_consume_idx++;
-         rx_consume_idx %= UART_BUF_SIZE;
+         rx_consume_idx %= RX_UART_BUF_SIZE;
          if(is_new_msg==1)
          {
              // return the  message
@@ -119,7 +121,7 @@ void setup_uart1(){
     IEC0bits.U1TXIE = 0;
     char temp = tx_msg_buffer[tx_consume_idx];
     tx_consume_idx++;
-    tx_consume_idx%=UART_BUF_SIZE;
+    tx_consume_idx%=TX_UART_BUF_SIZE;
     
     if(temp=='\0')
         return;
@@ -142,7 +144,7 @@ void setup_uart1(){
 //    U1TXREG = received;
     rx_msg_buffer[rx_insert_idx] = received;
     rx_insert_idx++;
-    rx_insert_idx%=UART_BUF_SIZE;
+    rx_insert_idx%=RX_UART_BUF_SIZE;
  }
  
  void __attribute__((__interrupt__, __auto_psv__)) _U1TXInterrupt(){ 
