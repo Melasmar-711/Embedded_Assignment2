@@ -61,9 +61,9 @@ float readIRDist()
     IR_reading = 2.34 - 4.74*IR_reading + 4.06*pow(IR_reading,2) - 1.60*pow(IR_reading,3) + 0.24*pow(IR_reading,4);
     return IR_reading;
 }
-float readVBat()
+double readVBat()
 {
-    float vbattery = ADC1BUF0;
+    double vbattery = ADC1BUF0;
     vbattery = 3.0*(vbattery*3.3/1023.0);
     return vbattery;
 }

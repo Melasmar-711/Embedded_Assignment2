@@ -37,7 +37,7 @@ void setScanSeqMode();
 void setAnalogPins();
 void setScanPorts();
 float readIRDist();
-float readVBat();
+double readVBat();
 
 #endif	/* ADC_HEADER */
 

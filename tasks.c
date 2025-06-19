@@ -17,9 +17,9 @@
 
 volatile int16_t accel_buffer[ACCEL_BUF_SIZE][3];  // A buffer to hold X, Y, Z accel field samples
 volatile uint8_t accel_buf_head = 0; 
-volatile int16_t avg_x, avg_y, avg_z;   // Variables to hold the average X, Y, Z values of accel data
+volatile float avg_x, avg_y, avg_z;   // Variables to hold the average X, Y, Z values of accel data
 volatile float IR_reading;
-volatile float vbattery;
+volatile double vbattery;
 int emergencyEndCounter = 0;
 volatile STATE carState = WAIT;  // Define and optionally initialize the variable
 
@@ -62,7 +62,7 @@ void configureBoard(){
 
 void calculate_average(){
     // Temporary variables to store the sum of X, Y, Z values
-    int32_t sum_x = 0, sum_y = 0, sum_z = 0;
+    int16_t sum_x = 0, sum_y = 0, sum_z = 0;
     // Loop over the buffer to sum the X, Y, Z values
 
     for (uint8_t i = 0; i < ACCEL_BUF_SIZE; i++) {
@@ -240,7 +240,6 @@ void handleUserMsg(char*msgPayload,char* msgType)
 
 void handleUserMsgs()
 {
-    
     int msg_received = 1;
     while(msg_received==1){
         char msgType[6];
@@ -263,7 +262,6 @@ void logBattery()
     char msg[16];
     sprintf(msg, "$MBATT,%.2f*", vbattery);
     sendMessage(msg);
-    triggerSend();
 }
 
 
@@ -271,9 +269,9 @@ void logBattery()
 void logIrAndAccel()
 {
     char msg[16];
-    sprintf(msg, "$MDIST,%.2f*", IR_reading);
+    sprintf(msg, "$MDIST,%d*", (int16_t)(IR_reading*100));
     sendMessage(msg);
-    sprintf(msg, "$MACC,%d,%d,%d*", avg_x, avg_y, avg_z);
+    sprintf(msg, "$MACC,%d,%d,%d*", (int16_t)avg_x, (int16_t)avg_y, (int16_t)avg_z);
     sendMessage(msg);
     triggerSend();
 }
